@@ -2,7 +2,7 @@
 
 ## Installation
 
-Add ImmuniWeb plugin to your pipeline to run automated scans.
+Add ImmuniWeb Neuron plugin to your pipeline to run automated scans.
 
 ## LICENSE
 
