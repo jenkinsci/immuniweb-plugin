@@ -1,8 +1,12 @@
 # ImmuniWeb Neuron Jenkins plugin
 
+https://www.immuniweb.com/products/neuron/
+
 ## Installation
 
-Add ImmuniWeb Neuron plugin to your pipeline to run automated scans.
+You should have an active ImmuniWeb Neuron project, where you can get API key and set Target URL values.
+
+Then add ImmuniWeb Neuron plugin to your pipeline to run automated scans.
 
 ## LICENSE
 
