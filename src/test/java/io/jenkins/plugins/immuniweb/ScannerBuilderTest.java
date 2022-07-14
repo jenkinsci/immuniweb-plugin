@@ -17,6 +17,7 @@ public class ScannerBuilderTest {
     final String apikey = "test1234test";
     final String target = "http://dev.stage.example.com";
 
+    /*
     @Test
     public void testConfigRoundtrip() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
@@ -25,7 +26,6 @@ public class ScannerBuilderTest {
         jenkins.assertEqualDataBoundBeans(new ScannerBuilder(apikey, target), project.getBuildersList().get(0));
     }
 
-    /*
     @Test
     public void testConfigRoundtripFrench() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
