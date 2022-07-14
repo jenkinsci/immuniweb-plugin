@@ -38,8 +38,8 @@ public class ScannerBuilder extends Builder implements SimpleBuildStep {
         this.target = target;
     }
 
-    public String getApikey() {
-        return apikey.getPlainText();
+    public Secret getApikey() {
+        return apikey;
     }
 
     public String getTarget() {
