@@ -84,7 +84,6 @@ public class ScannerBuilder extends Builder implements SimpleBuildStep {
         }
     }
 
-    @Symbol("greet")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
         public FormValidation doCheckApikey(@QueryParameter String value) throws IOException, ServletException {
