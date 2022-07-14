@@ -10,9 +10,9 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.Builder;
 import hudson.tasks.BuildStepDescriptor;
+import hudson.util.Secret;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
-// import org.kohsuke.stapler.DataBoundSetter;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -29,17 +29,17 @@ import org.jenkinsci.Symbol;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ScannerBuilder extends Builder implements SimpleBuildStep {
-    private final String apikey;
+    private final Secret apikey;
     private final String target;
 
     @DataBoundConstructor
-    public ScannerBuilder(String apikey, String target) {
+    public ScannerBuilder(Secret apikey, String target) {
         this.apikey = apikey;
         this.target = target;
     }
 
     public String getApikey() {
-        return apikey;
+        return apikey.getPlainText();
     }
 
     public String getTarget() {
@@ -60,7 +60,7 @@ public class ScannerBuilder extends Builder implements SimpleBuildStep {
         conn.setDoOutput(true);
         conn.setInstanceFollowRedirects(false);
         conn.setRequestMethod("POST");
-        String authString = Base64.getEncoder().encodeToString(("neuron:" + apikey).getBytes(StandardCharsets.UTF_8));
+        String authString = Base64.getEncoder().encodeToString(("neuron:" + apikey.getPlainText()).getBytes(StandardCharsets.UTF_8));
         conn.setRequestProperty("Authorization", "Basic " + authString);
         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         conn.setRequestProperty("charset", "utf-8");
@@ -77,6 +77,7 @@ public class ScannerBuilder extends Builder implements SimpleBuildStep {
         ObjectMapper mapper = new ObjectMapper();
         IWApiResponse resp = mapper.readValue(responseStream, IWApiResponse.class);
 
+        // parse JSON response
         if (Objects.equals(resp.status, "ok")) {
             listener.getLogger().println("Scan scheduled: " + resp.id);
         } else {
@@ -86,9 +87,10 @@ public class ScannerBuilder extends Builder implements SimpleBuildStep {
 
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
-        public FormValidation doCheckApikey(@QueryParameter String value) throws IOException, ServletException {
-            if (value.length() == 0)
+        public FormValidation doCheckApikey(@QueryParameter Secret value) throws IOException, ServletException {
+            if (value.getPlainText().length() == 0) {
                 return FormValidation.error(Messages.ScannerBuilder_DescriptorImpl_errors_missingApikey());
+            }
 
             return FormValidation.ok();
         }
@@ -106,10 +108,8 @@ public class ScannerBuilder extends Builder implements SimpleBuildStep {
 }
 
 class IWApiResponse {
-    public String success;
-    public String message;
     public String status;
+    public String message;
     public String id;
-    public String info;
     public Float time;
 }
